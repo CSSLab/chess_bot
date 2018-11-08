@@ -31,6 +31,7 @@ def main():
     Handler = EventsHandler(slack_client)
     while True:
         for event in slack_client.rtm_read():
+            print(event)
             if event['type'] == 'message':
                 Handler.handleEvent(event['text'], event['channel'])
         time.sleep(RTM_READ_DELAY)
