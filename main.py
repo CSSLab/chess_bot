@@ -13,6 +13,7 @@ RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
 class EventsHandler(object):
     def __init__(self, client):
         self.client = client
+        self.board = None
 
     def send(self, message, channel):
         self.client.api_call(
@@ -21,22 +22,30 @@ class EventsHandler(object):
             text=message,
         )
 
+    def postFile(self, content, channel, name = 'chess.png', comment = None):
+        self.client.api_call(
+            "files.upload",
+            channels=channel,
+            file=content,
+            filename=name,
+            initial_comment=comment
+            )
+
+    def postBoard(self, board, channel, **kargs):
+        self.postFile(cairosvg.svg2png(board._repr_svg_()), channel, **kargs)
+
     def handleEvent(self, message, channel):
         if message == 'help':
             self.send("Help requested", channel)
-        elif message == 'chess':
-            b = chess.Board()
-            img = io.BytesIO(cairosvg.svg2png(chess.svg.board()))
-            self.client.api_call("files.upload",
-              channels=channel,
-              file=img.getvalue(),
-              filename="board.png")
+        elif message == 'start':
+            if self.board is None:
+                self.board = chess.Board()
+                self.send("Black or White?", channel)
+
+                self.postBoard(self.board)
+
         else:
             self.send("Unkown command", channel)
-
-
-
-
 
 
 def main():
