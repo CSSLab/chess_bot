@@ -20,6 +20,7 @@ class EventsHandler(object):
         self.board = None
         self.channel = None
         self.movetime = 1000
+        self.startTime = None
 
     def send(self, message, channel = None):
         if channel is None:
@@ -97,7 +98,7 @@ def main():
     while True:
         for event in slack_client.rtm_read():
             print(event)
-            if event['type'] == 'message' and 'bot_id' not in event and event['username'] != 'reid_bot':
+            if event['type'] == 'message' and 'bot_id' not in event and 'subtype' not in event:
                 Handler.handleEvent(event['text'], event['channel'])
         time.sleep(RTM_READ_DELAY)
 
