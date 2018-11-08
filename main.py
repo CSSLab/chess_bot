@@ -11,6 +11,7 @@ def main():
         command, channel = slack_handlers.parse_bot_commands(slack_client.rtm_read())
         if command:
             slack_handlers.handle_command(command, channel)
+        print(command, channel)
         time.sleep(RTM_READ_DELAY)
 
 if __name__ == "__main__":
