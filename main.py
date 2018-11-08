@@ -32,7 +32,7 @@ def main():
     while True:
         for event in slack_client.rtm_read():
             if event['type'] == 'message':
-                handleEvents(event['text'])
+                Handler.handleEvent(event['text'], event['channel'])
         time.sleep(RTM_READ_DELAY)
 
 if __name__ == "__main__":
