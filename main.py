@@ -98,7 +98,7 @@ def checkIfmessage(event):
         return False
     elif 'user' not in event:
         return False
-    elif 'message' not in event:
+    elif event['type'] != 'message':
         return False
     return True
 
