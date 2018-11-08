@@ -26,7 +26,7 @@ class EventsHandler(object):
         elif message == 'chess':
             b = chess.Board()
             img = io.BytesIO(chess.svg.board().encode('utf8'))
-            slack_client.api_call("files.upload",
+            self.slack_client.api_call("files.upload",
               channels=channel,
               file=img.getvalue(),
               filename="board.svg")
