@@ -3,6 +3,7 @@ import time
 import re
 from slackclient import SlackClient
 
+#based on https://www.fullstackpython.com/blog/build-first-slack-bot-python.html
 
 # instantiate Slack client
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
