@@ -63,10 +63,15 @@ class EventsHandler(object):
             self.send("Ending current game")
 
         elif self.board is not None:
-            moves = [m.uci() for m in b.legal_moves]
+            moves = [m.uci() for m in self.board.legal_moves]
             if message in moves:
                 self.board.push_uci(message)
                 self.postBoard()
+                self.send("Making my move")
+                m, p = self.Engine(b)
+                self.board.push(m.bestmove)
+                self.postBoard()
+                self.send("Probs:\n{}".format(p))
             else:
                 self.send("Invalid move, the valid moves are:\n{}".format(', '.join(moves)))
         else:
