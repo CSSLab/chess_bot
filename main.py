@@ -100,7 +100,7 @@ def checkIfmessage(event):
         return False
     elif event['type'] != 'message':
         return False
-    elif event['name'] == 'reidbot':
+    elif event.get('name', '') == 'reidbot':
         return False
     return True
 
