@@ -112,9 +112,6 @@ def main():
             if checkIfmessage(event):
                 Handler.handleEvent(event['text'], event['channel'])
 
-
-            event['type'] == 'message' and 'bot_id' not in event and 'subtype' not in event and event.get('username') != 'reid_bot':
-
         time.sleep(RTM_READ_DELAY)
 
 if __name__ == "__main__":
