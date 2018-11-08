@@ -1,5 +1,9 @@
 import slack_handlers
 
+import chess
+
+import io
+
 import time
 
 RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
@@ -18,6 +22,13 @@ class EventsHandler(object):
     def handleEvent(self, message, channel):
         if message == 'help':
             self.send("Help requested", channel)
+        elif message == 'chess':
+            b = chess.Board()
+            img = io.BytesIO(chess.svg.board().encode('utf8'))
+            slack_client.api_call("files.upload",
+              channels=channel,
+              file=img.getvalue(),
+              filename="board.svg")
         else:
             self.send("Unkown command", channel)
 
