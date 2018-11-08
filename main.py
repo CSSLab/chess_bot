@@ -91,6 +91,17 @@ class EventsHandler(object):
         else:
             self.send("Unkown command")
 
+def checkIfmessage(event):
+    if 'text' not in event:
+        return False
+    elif 'channel' not in event:
+        return False
+    elif 'user' not in event:
+        return False
+    elif 'message' not in event:
+        return False
+    return True
+
 
 def main():
     slack_client = slack_handlers.setup()
@@ -98,8 +109,12 @@ def main():
     while True:
         for event in slack_client.rtm_read():
             print(event)
-            if event['type'] == 'message' and 'bot_id' not in event and 'subtype' not in event and event.get('username') != 'reid_bot':
+            if checkIfmessage(event):
                 Handler.handleEvent(event['text'], event['channel'])
+
+
+            event['type'] == 'message' and 'bot_id' not in event and 'subtype' not in event and event.get('username') != 'reid_bot':
+
         time.sleep(RTM_READ_DELAY)
 
 if __name__ == "__main__":
