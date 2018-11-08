@@ -63,6 +63,7 @@ def setup():
         print("Starter Bot connected and running!")
         # Read bot's user ID by calling Web API method `auth.test`
         starterbot_id = slack_client.api_call("auth.test")["user_id"]
-        
+        return slack_client
     else:
         print("Connection failed. Exception traceback printed above.")
+        raise RuntimeError("Connection issues")

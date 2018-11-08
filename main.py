@@ -6,7 +6,7 @@ RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
 
 
 def main():
-    slack_handlers.setup()
+    slack_client = slack_handlers.setup()
     while True:
         command, channel = slack_handlers.parse_bot_commands(slack_client.rtm_read())
         if command:
