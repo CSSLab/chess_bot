@@ -3,6 +3,7 @@ import slack_handlers
 import chess
 import chess.svg
 
+import cairosvg
 import io
 
 import time
