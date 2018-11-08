@@ -1,4 +1,5 @@
 import slack_handlers
+import imitation_chess
 
 import chess
 import chess.svg
@@ -9,6 +10,8 @@ import io
 import time
 
 RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
+
+weightsSL = '/home/reidmcy/lczero-training/tf/networks/sl-64x6/sl-64x6-50000.pb.gz'
 
 class EventsHandler(object):
     def __init__(self, client):
@@ -36,7 +39,9 @@ class EventsHandler(object):
             initial_comment=comment
             )
 
-    def postBoard(self, board, **kargs):
+    def postBoard(self, board = None, **kargs):
+        if board is None:
+            board = self.board
         self.postFile(cairosvg.svg2png(board._repr_svg_()), **kargs)
 
     def handleEvent(self, message, channel):
@@ -46,10 +51,23 @@ class EventsHandler(object):
         elif message == 'start':
             if self.board is None:
                 self.board = chess.Board()
-                self.send("Black or White?")
+                self.Engine = imitation_chess.EngineHandler(enginePath, weightsSL)
+                self.send("Make your move")
+                self.postBoard()
+            else:
+                self.send("Game already running, send 'stop' to end current game")
+        elif message == 'stop':
+            self.board = None
+            self.Engine.terminate()
+            self.send("Ending current game")
 
-                self.postBoard(self.board)
-
+        elif self.board is not None:
+            moves = [m.uci() for m in b.legal_moves]
+            if message in moves:
+                self.board.push_uci(message)
+                self.postBoard()
+            else:
+                self.send("Invalid move, the valid moves are:\n{}".format(', '.join(moves)))
         else:
             self.send("Unkown command")
 
