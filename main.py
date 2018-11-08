@@ -14,15 +14,20 @@ class EventsHandler(object):
     def __init__(self, client):
         self.client = client
         self.board = None
+        self.channel = None
 
-    def send(self, message, channel):
+    def send(self, message, channel = None):
+        if channel is None:
+            channel = self.channel
         self.client.api_call(
             "chat.postMessage",
             channel=channel,
             text=message,
         )
 
-    def postFile(self, content, channel, name = 'chess.png', comment = None):
+    def postFile(self, content, channel = None, name = 'chess.png', comment = None):
+        if channel is None:
+            channel = self.channel
         self.client.api_call(
             "files.upload",
             channels=channel,
@@ -31,21 +36,22 @@ class EventsHandler(object):
             initial_comment=comment
             )
 
-    def postBoard(self, board, channel, **kargs):
-        self.postFile(cairosvg.svg2png(board._repr_svg_()), channel, **kargs)
+    def postBoard(self, board, **kargs):
+        self.postFile(cairosvg.svg2png(board._repr_svg_()), **kargs)
 
     def handleEvent(self, message, channel):
+        self.channel = channel
         if message == 'help':
-            self.send("Help requested", channel)
+            self.send("Help requested")
         elif message == 'start':
             if self.board is None:
                 self.board = chess.Board()
-                self.send("Black or White?", channel)
+                self.send("Black or White?")
 
                 self.postBoard(self.board)
 
         else:
-            self.send("Unkown command", channel)
+            self.send("Unkown command")
 
 
 def main():
