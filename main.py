@@ -45,6 +45,11 @@ class EventsHandler(object):
             board = self.board
         self.postFile(cairosvg.svg2png(board._repr_svg_()), **kargs)
 
+    def makeEngineMove(self):
+        m, p = self.Engine(self.board)
+        self.board.push(m.bestmove)
+        return m, p
+
     def handleEvent(self, message, channel):
         self.channel = channel
         if message == 'help':
@@ -68,8 +73,7 @@ class EventsHandler(object):
                 self.board.push_uci(message)
                 self.postBoard()
                 self.send("Making my move")
-                m, p = self.Engine(b)
-                self.board.push(m.bestmove)
+                m, p = self.makeEngineMove()
                 self.postBoard()
                 self.send("Probs:\n{}".format(p))
             else:
