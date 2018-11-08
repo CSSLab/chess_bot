@@ -19,6 +19,7 @@ class EventsHandler(object):
         self.client = client
         self.board = None
         self.channel = None
+        self.movetime = 1000
 
     def send(self, message, channel = None):
         if channel is None:
@@ -46,7 +47,7 @@ class EventsHandler(object):
         self.postFile(cairosvg.svg2png(board._repr_svg_()), **kargs)
 
     def makeEngineMove(self):
-        m, p = self.Engine(self.board)
+        m, p = self.Engine.getBoardProbs(self.board, movetime = self.movetime)
         self.board.push(m.bestmove)
         return m, p
 
@@ -67,11 +68,19 @@ class EventsHandler(object):
             self.Engine.terminate()
             self.send("Ending current game")
 
+        elif message.startswith('movetime '):
+            self.movetime = int(message.split()[1])
+
         elif self.board is not None:
             moves = [m.uci() for m in self.board.legal_moves]
             if message in moves:
                 self.board.push_uci(message)
                 self.postBoard()
+                self.send("Making my move")
+                m, p = self.makeEngineMove()
+                self.postBoard()
+                self.send("Probs:\n{}".format(p))
+            if message == 'skip':
                 self.send("Making my move")
                 m, p = self.makeEngineMove()
                 self.postBoard()
@@ -88,7 +97,7 @@ def main():
     while True:
         for event in slack_client.rtm_read():
             print(event)
-            if event['type'] == 'message' and 'bot_id' not in event:
+            if event['type'] == 'message' and 'bot_id' not in event and len(event['text']) > 0:
                 Handler.handleEvent(event['text'], event['channel'])
         time.sleep(RTM_READ_DELAY)
 
