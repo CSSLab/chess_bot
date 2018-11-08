@@ -1,6 +1,7 @@
 import slack_handlers
 
 import chess
+import chess.svg
 
 import io
 
