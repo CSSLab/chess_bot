@@ -25,7 +25,7 @@ class EventsHandler(object):
             self.send("Help requested", channel)
         elif message == 'chess':
             b = chess.Board()
-            img = io.BytesIO(cairosvg.svg2png((chess.svg.board()))
+            img = io.BytesIO(cairosvg.svg2png(chess.svg.board()))
             self.client.api_call("files.upload",
               channels=channel,
               file=img.getvalue(),
