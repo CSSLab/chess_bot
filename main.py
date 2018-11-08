@@ -102,6 +102,8 @@ def checkIfmessage(event):
         return False
     elif event.get('name', '') == 'reidbot':
         return False
+    elif event.get('username', '') == 'reid_bot':
+        return False
     return True
 
 
