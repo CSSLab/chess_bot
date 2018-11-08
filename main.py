@@ -11,6 +11,7 @@ import time
 
 RTM_READ_DELAY = 1 # 1 second delay between reading from RTM
 
+enginePath = 'lc0'
 weightsSL = '/home/reidmcy/lczero-training/tf/networks/sl-64x6/sl-64x6-50000.pb.gz'
 
 class EventsHandler(object):
