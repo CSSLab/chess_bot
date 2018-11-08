@@ -32,7 +32,7 @@ def main():
     while True:
         for event in slack_client.rtm_read():
             print(event)
-            if event['type'] == 'message':
+            if event['type'] == 'message' and 'bot_id' not in event:
                 Handler.handleEvent(event['text'], event['channel'])
         time.sleep(RTM_READ_DELAY)
 
